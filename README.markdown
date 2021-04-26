@@ -61,6 +61,7 @@ sudo -u postgres createuser parallels -s
 
 # If you would like to set a password for the user, you can do the following
 sudo -u postgres psql
+
 postgres=# \password parallels
 
 
@@ -71,31 +72,30 @@ cp config/database.yml.example config/database.yml
 ### Because I am using 3.0.0 I removed the Gemfile.lock, and changed the .ruby_env file to 3.0.0 and also in Gemfile
 
 # We also need
-sudo apt-get update
-sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+- sudo apt-get update
+- sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
 
 
 # We need elastic search
 https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-20-04
 
 # if we don't have java (I didn't) java -version tells you
-sudo apt install default-jre
-
-sudo apt install default-jdk
+- sudo apt install default-jre
+- sudo apt install default-jdk
 
 
 # check with javac -version
 # javac 11.0.9.1
 
-curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-sudo apt update
-sudo apt install elasticsearch
+- curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+- echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+- sudo apt update
+- sudo apt install elasticsearch
 
-# change networkhost in /etc/elasticsearch/elasticsearch.yml
+# *change networkhost in /etc/elasticsearch/elasticsearch.yml*
 
-sudo systemctl start elasticsearch
-sudo systemctl enable elasticsearch
+- sudo systemctl start elasticsearch
+- sudo systemctl enable elasticsearch
 
 
 # Also I had to change the arxiv_feed_import.rake file (in lib/tasks) to read URI.open rather than just open on line 23
@@ -105,22 +105,22 @@ sudo systemctl enable elasticsearch
 # Had to add -- gem 'rexml'  -- to the Gemfile (remember to bundle install again)
 
 
-bundle install
+- bundle install
 
 
 
-rake db:setup
-rake es:migrate
-rake arxiv:feed_import
-rails server
+- rake db:setup
+- rake es:migrate
+- rake arxiv:feed_import
+- rails server
 
 (kill server - CTRL-C)
 
 ## Populating the database
 
-rake arxiv:oai_update
+- rake arxiv:oai_update
 
-rails s 
+- rails s 
 
 # And it seems to work!
 
