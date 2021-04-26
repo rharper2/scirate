@@ -14,8 +14,8 @@ require 'rspec/rails'
 
 Delayed::Worker.delay_jobs = false
 
-Settings::RECAPTCHA_SITE_KEY   = 'super-secret-site-key'
-Settings::RECAPTCHA_SECRET_KEY = 'super-secret-secret-key'
+Settings::RECAPTCHA_SITE_KEY   = '6LedNkkaAAAAAHkiViGsdZLiW8O8SxcPq5UtB6Ni'
+Settings::RECAPTCHA_SECRET_KEY = '6LedNkkaAAAAAGdnj6fnStpJURxL8HCtHxklacnk'
 
 # http://stackoverflow.com/questions/8774227/why-not-use-shared-activerecord-connections-for-rspec-selenium
 class ActiveRecord::Base

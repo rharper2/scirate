@@ -16,7 +16,7 @@ module Settings
   ARXIV_HOST = "arxiv.org"
 
   # Hostname to put in emails and such
-  HOST = "scirate.com"
+  HOST = "127.0.0.1"
 
   # This toggle should do very little, as the staging site
   # is meant to match production as closely as possible.
@@ -55,6 +55,8 @@ module Settings
   GOOGLE_CLIENT_ID = ''
   GOOGLE_CLIENT_SECRET = ''
 
+
+ 
   # New Relic app monitoring auth details
   # NEW_RELIC_LICENSE_KEY = ''
   # NEW_RELIC_APP_NAME = ''

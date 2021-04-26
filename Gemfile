@@ -1,4 +1,4 @@
-ruby '2.6.6'
+ruby '3.0.0'
 source 'http://rubygems.org'
 
 # Rails
@@ -12,7 +12,10 @@ gem 'pg', '~> 1.1'
 gem 'activerecord-import' # For bulk importing papers
 gem 'acts_as_votable' # Comment votes (not scites)
 gem 'unidecoder', '~> 1.1.2' # For making ascii author searchterms
-
+gem 'rexml'
+gem 'open-uri'
+gem 'webrick'
+gem 'httplog'
 # Ruby futures
 #gem 'futuroscope', require: 'futuroscope/convenience'
 

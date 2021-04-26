@@ -35,7 +35,7 @@ module SciRate
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.action_controller.permit_all_parameters = true
-    config.log_level = :info
+    config.log_level = :debug
     config.assets.enabled = true
 
 
