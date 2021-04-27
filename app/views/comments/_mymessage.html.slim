@@ -1,0 +1,29 @@
+
+-if comment.paper_uid ==  "1"
+ .row
+  .col-md-12
+   .well
+    .abbr-comment data-comment-id=(comment.paper_uid)
+  
+    span.username
+     a style="font-size:140%" href="/user/#{comment.user_username}"
+        = comment.user_fullname
+    .col-md-offset-1
+    =< timeago(comment.created_at)
+    div.comment data-id=(comment.id) data-markup=(comment.content)
+     .body.tex2jax
+         = simple_format(strip_tags(comment.content))
+     /-if !comment.image.url.include? "missing"
+     / = image_tag comment.image.url(:original)
+     - if   current_user
+       .actions
+          - if current_user.id == comment.user_id
+            a.edit Edit
+            / a.reply reply
+            = link_to 'Delete post', delete_comment_path(comment), method: :post
+          - if current_user.can_moderate?
+            .div 
+             span style="color:red" Moderate:
+             =< link_to 'delete', delete_comment_path(comment), method: :post
+ hr
+ 

@@ -12,7 +12,10 @@ div.comment class=('mine' if signed_in? && current_user.id == comment.user_id) c
         i.fa.fa-arrow-up
     .nonvotes
       - if @user
-        div= link_to comment.paper.title, comment.paper
+        - if comment.paper.uid != "1"
+           div= link_to comment.paper.title, comment.paper
+        - else 
+            div style="font-size:130%" Message posted
       = link_to comment.user.fullname, comment.user
       - if comment.parent
         |  in reply to

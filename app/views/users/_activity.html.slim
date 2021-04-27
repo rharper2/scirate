@@ -25,7 +25,11 @@
         .col-md-11
           = timeago(activity.created_at)
           .title
-              | #{@user.fullname} commented on <a href="#{paper_url(activity.comment.paper)}##{activity.comment.id}">#{activity.comment.paper.title}</a>
+           -if !activity.comment.paper.nil?
+             -if activity.comment.paper.uid != "1"
+                | #{@user.fullname} commented on <a href="#{paper_url(activity.comment.paper)}##{activity.comment.id}">#{activity.comment.paper.title}</a>
+             -else 
+                | #{@user.fullname} left a message
           .content.well.tex2jax
             .body
               = simple_format(strip_tags(activity.comment.content))

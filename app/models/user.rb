@@ -225,6 +225,13 @@ class User < ActiveRecord::Base
   def send_signup_confirmation
     generate_token(:confirmation_token)
     save!
+    doc = Nokogiri::HTML(URI.open("http://wisdomofchopra.com/iframe.php", :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE))
+    @quote = ""
+    doc.css('#quote header h2').each do |link|
+       @quote = link.content
+    end
+    logger.info("Quote is #{@quote}")
+    
     UserMailer.signup_confirmation(self).deliver_later
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_032141) do
+ActiveRecord::Schema.define(version: 2021_05_27_053846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,6 +141,16 @@ ActiveRecord::Schema.define(version: 2020_01_14_032141) do
     t.index ["uid"], name: "index_feeds_on_uid", unique: true
   end
 
+  create_table "groupmessages", force: :cascade do |t|
+    t.string "title"
+    t.text "content", null: false
+    t.datetime "meeting", null: false
+    t.datetime "created"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "papers", force: :cascade do |t|
     t.text "uid", null: false
     t.text "submitter"
@@ -167,6 +177,8 @@ ActiveRecord::Schema.define(version: 2020_01_14_032141) do
     t.boolean "locked", default: false, null: false
     t.integer "volounteer_id"
     t.datetime "last_time_scited"
+    t.datetime "latest_comment"
+    t.integer "scirate_rates", default: 0
     t.index ["abs_url"], name: "index_papers_on_abs_url", unique: true
     t.index ["comments_count"], name: "index_papers_on_comments_count"
     t.index ["pdf_url"], name: "index_papers_on_pdf_url", unique: true

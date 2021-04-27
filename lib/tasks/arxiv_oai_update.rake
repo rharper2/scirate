@@ -3,35 +3,48 @@ require 'arxivsync'
 namespace :arxiv do
   desc "Update database with recent papers"
   task oai_update: :environment do
-    time = Time.now.utc
-
-    last_paper = Paper.order("submit_date desc").first
-
-    #if last_paper.nil?
-      fromdate = Time.now-21.days
-    #else
-    #  fromdate = last_paper.pubdate
-    #end
-
+    time = Time.now
+    last_paper = Paper.order("submit_date desc").second
+    puts "Last paper was #{last_paper}"
+    puts "Its uid is #{last_paper.uid} and its pubdate is #{last_paper.pubdate}"
+    if last_paper.nil?
+      fromdate = Time.now-3.days
+    else
+      fromdate = last_paper.pubdate-1.days
+    end
+    #fromdate = fromdate -2.days
+    puts "Setting date to #{fromdate}"
+    # Slogger.info("Set date to #{date}")
     # Do this in a single transaction to avoid any database consistency issues
     bulk_papers = []
-    ArxivSync.get_metadata(from: fromdate.to_date) do |resp, papers|
-      bulk_papers += papers
+    begin
+	  ArxivSync.get_metadata(from: fromdate.to_date) do |resp, papers|
+      		bulk_papers += papers
+    	end
+    rescue => error
+        File.open("latestUpdate.txt","w+") do |f|
+	       f.write("Update failed at #{Time.now} #{error.message}")
+        end
+	return
     end
-
     syncdate = time.change(hour: Settings::ARXIV_UPDATE_HOUR)
     if time < syncdate
+      puts "Time was less than syncdate #{time} .v. #{syncdate}"
       # arxiv hasn't updated yet, we're actually syncing from yesterday
-      syncdate = syncdate - 1.days
+      #syncdate = syncdate - 1.days
     end
-
+    puts "Okay should use a syncdate of #{syncdate}"
     new_uids, updated_uids = Arxiv::Import.papers(bulk_papers, syncdate: syncdate)
 
-    # Only consider it a successful update if either:
-    # - we got new papers
-    # - it's a weekend
+      # Only consider it a successful update if either:
+      # - we got new papers
+      # - it's a weekend
     if syncdate.saturday? || syncdate.sunday? || !new_uids.empty?
       System.update_all(arxiv_sync_dt: time)
+    end
+    System.update_all(arxiv_sync_dt: time)
+    File.open("latestUpdate.txt","w+") do |f|
+	       f.write("Updated at #{Time.now}")
     end
   end
 end

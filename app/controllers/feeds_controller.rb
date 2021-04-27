@@ -31,6 +31,7 @@ class FeedsController < ApplicationController
         @date = end_of_today
       else
         @date = Feed.where(uid: feed_uids).order("last_paper_date DESC").pluck(:last_paper_date).first
+        @date = end_of_today
       end
     end
 
@@ -82,7 +83,7 @@ class FeedsController < ApplicationController
     # here we select an arbitrary number of comments (I think its 150)
     # and throw away any that are too old.
     #@recent_comments = _recent_comments(feed_uids)
-    #@recent_comments = _time_comments.select{ |c| c.updated_at > @backdate+1.day}
+    @recent_comments = _time_comments.select{ |c| c.updated_at > @backdate+1.day}
     # so this loads the papers assuming all feeds.
     # temp test Grange_query -> range_query
     @papers, @pagination = _Grange_query(nil, @backdate, @date, @page)
@@ -205,7 +206,8 @@ class FeedsController < ApplicationController
 
   # Go range days back from a given date
   def _backdate(date, range)
-    (date - (range-1).days)
+    logger.info("Backdate ==22== #{date} #{range}")
+    (date - (range).days)
   end
 
   def _recent_comments(feed_uids=nil)
@@ -230,6 +232,31 @@ class FeedsController < ApplicationController
                  'users.fullname AS user_fullname')
   end
 
+
+  def _time_comments(feed_uids=nil)
+    query = if feed_uids.nil?
+      Comment.joins(:user, :paper)
+             .where(deleted: false, hidden: false)
+    else
+      Comment.joins(:user, paper: :categories)
+             .where(deleted: false, hidden: false, hidden_from_recent: false)
+             .where(categories: { feed_uid: feed_uids })
+    end
+
+    query.order('comments.id DESC')
+         .limit(100)
+         .select('DISTINCT ON (comments.id) comments.id',
+                 'comments.content',
+                 'comments.created_at',
+                 'comments.updated_at',
+                 'papers.uid AS paper_uid',
+                 'papers.title AS paper_title',
+                 'users.username AS user_username',
+                 'users.fullname AS user_fullname',
+                 'users.id AS user_id')
+  end
+
+
   # The primary SciRate query. Given a set of feed uids, a pair of dates
   # to look between, and a page number, find a bunch of papers and order
   # them by relevance.
@@ -240,17 +267,18 @@ class FeedsController < ApplicationController
   def _range_query(feed_uids, backdate, date, page)
     page = (page.nil? ? 1 : page.to_i)
     per_page = 50
-
+    logger.info("WE HAVe ==22== #{backdate} and #{date}")
     filter = [
       {
         range: {
           pubdate: {
-           gte: backdate.beginning_of_day,
+           gte: backdate.beginning_of_day+10.hours,
            lte: date.end_of_day
           }
         }
       }
     ]
+    logger.info("Filter ==22== #{filter}")
 
     filter << { terms: { feed_uids: feed_uids } } unless feed_uids.nil?
 
@@ -260,15 +288,17 @@ class FeedsController < ApplicationController
       query: { bool: { filter: filter } },
       sort: [
         { scites_count: 'desc' },
+        { scirate_count: 'desc' },
         { comments_count: 'desc' },
         { pubdate: 'desc' },
         { submit_date: 'desc' },
         { uid: 'asc' }
       ]
     }
+    logger.info("==22== final query #{query}")
 
     res = Search::Paper.es_find(query)
-
+    logger.info("==33== #{res}")
     papers_by_uid = map_models :uid, Paper.where(uid: res["hits"]["hits"].map { |p| p["_source"]["uid"] })
 
     papers = res["hits"]["hits"].map do |p|
@@ -318,6 +348,7 @@ class FeedsController < ApplicationController
       query: { bool: { filter: filter } },
       sort: [
         { scites_count: 'desc' },
+        { scirate_count: 'desc' },
         { comments_count: 'desc' },
         { pubdate: 'desc' },
         { submit_date: 'desc' },

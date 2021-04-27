@@ -9,11 +9,11 @@
     div.comment data-id=(message.id) data-markup=(message.content)
      .body.tex2jax
          = simple_format(strip_tags(message.content))
-     -if !message.image.url.include? "missing"
-       = image_tag message.image.url(:original)
+     /-if !message.image.url.include? "missing"
+     /  = image_tag message.image.url(:original)
      - if   current_user
        .actions
-          - if current_user.is_moderator?
+          - if current_user.can_moderate?
             a.edit Edit
             / a.reply reply
             a href="/group/#{message.id}/delete" data-method="post" 

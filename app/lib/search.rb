@@ -105,6 +105,8 @@ module Search
           comments_count: { type: 'integer' },
           submit_date: { type: 'date' },
           update_date: { type: 'date' },
+          lastComment_date: { type: 'date'},
+          scirate_count: { type: 'integer' },
           pubdate: { type: 'date' },
           pdf_url: { type: 'text', index: false }
         }
@@ -254,6 +256,8 @@ module Search::Paper
       'comments_count' => paper.comments_count,
       'submit_date' => paper.submit_date,
       'update_date' => paper.update_date,
+      'lastComment_date' => paper.latest_comment,
+      'scirate_count' => paper.scirate_rates,
       'pubdate' => paper.pubdate,
       'pdf_url' => paper.pdf_url
     }
@@ -304,7 +308,9 @@ module Search::Paper
 
     loop do
       break if start_id > end_id
-      results = execute("SELECT papers.id, papers.uid, papers.title, papers.abstract, authors.id AS author_id, authors.fullname AS author_fullname, authors.searchterm AS author_searchterm, scites.user_id AS sciter_id, papers.scites_count, papers.comments_count, papers.submit_date, papers.update_date, papers.pubdate, papers.pdf_url FROM papers LEFT JOIN authors ON authors.paper_uid=papers.uid LEFT JOIN scites ON scites.paper_uid=papers.uid WHERE papers.id >= ? AND papers.id < ? ORDER BY papers.id ASC, authors.position ASC;", start_id, next_id)
+      #results = execute("SELECT papers.id, papers.uid, papers.title, papers.abstract, authors.id AS author_id, authors.fullname AS author_fullname, authors.searchterm AS author_searchterm, scites.user_id AS sciter_id, papers.scites_count, papers.comments_count, papers.submit_date, papers.update_date, papers.pubdate, papers.pdf_url FROM papers LEFT JOIN authors ON authors.paper_uid=papers.uid LEFT JOIN scites ON scites.paper_uid=papers.uid WHERE papers.id >= ? AND papers.id < ? ORDER BY papers.id ASC, authors.position ASC;", start_id, next_id)
+      results = execute("SELECT papers.id, papers.uid, papers.title, papers.abstract, authors.id AS author_id, authors.fullname AS author_fullname, authors.searchterm AS author_searchterm, scites.user_id AS sciter_id, papers.scites_count, papers.scirate_rates, papers.latest_comment, papers.comments_count, papers.submit_date, papers.update_date, papers.pubdate, papers.pdf_url FROM papers LEFT JOIN authors ON authors.paper_uid=papers.uid LEFT JOIN scites ON scites.paper_uid=papers.uid WHERE papers.id >= ? AND papers.id < ? ORDER BY papers.id ASC, authors.position ASC;", start_id, next_id)
+      #categories = execute("SELECT papers.id, papers.uid, categories.feed_uid AS feed_uid FROM papers INNER JOIN categories ON categories.paper_uid=uid WHERE papers.id >= ? AND papers.id < ? ORDER BY categories.position", start_id, next_id)
       categories = execute("SELECT papers.id, papers.uid, categories.feed_uid AS feed_uid FROM papers INNER JOIN categories ON categories.paper_uid=uid WHERE papers.id >= ? AND papers.id < ? ORDER BY categories.position", start_id, next_id)
 
       start_id = next_id
@@ -334,10 +340,13 @@ module Search::Paper
             'feed_uids' => [],
             'sciter_ids' => [],
             'scites_count' => row['scites_count'].to_i,
+            'scirate_count' => row['scirate_rates'].to_i,   
+            'pubdate' => row['pubdate'],
+            #'latestComment_date' => Time.parse(row['pubdate'] + " UTC"),
+            'latestComment_date' => row['pubdate'],
             'comments_count' => row['comments_count'].to_i,
             'submit_date' => row['submit_date'],
             'update_date' => row['update_date'],
-            'pubdate' => row['pubdate'],
             'pdf_url' => row['pdf_url']
           }
         end
