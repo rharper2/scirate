@@ -16,38 +16,38 @@ Bug reports and feature requests should be submitted as [GitHub issues](https://
 ### INSTALL RUBY AND RAILS
 
 
-sudo apt-get update
-sudo apt install curl
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+- sudo apt-get update
+- sudo apt install curl
+- curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+- curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+- echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
-sudo apt-get update
-sudo apt-get install git-core zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+- sudo apt-get update
+- sudo apt-get install git-core zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
 
 
 # change to a suitable directory
 
-git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-exec $SHELL
+- git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+- echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+- echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+- exec $SHELL
 
-git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-exec $SHELL
+- git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+- echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+- exec $SHELL
 
-rbenv install 3.0.0
-rbenv global 3.0.0
-ruby -v
+- rbenv install 3.0.0
+- rbenv global 3.0.0
+- ruby -v
 
-gem install bundler
-rbenv rehash
+- gem install bundler
+- rbenv rehash
 
-gem install rails -v 6.1.1
-rbenv rehash
+- gem install rails -v 6.1.1
+- rbenv rehash
 
-rails -v
+- rails -v
 # Rails 6.1.1
 
 # Setting Up PostgreSQL
@@ -61,6 +61,7 @@ sudo -u postgres createuser parallels -s
 
 # If you would like to set a password for the user, you can do the following
 sudo -u postgres psql
+
 postgres=# \password parallels
 
 
@@ -71,31 +72,30 @@ cp config/database.yml.example config/database.yml
 ### Because I am using 3.0.0 I removed the Gemfile.lock, and changed the .ruby_env file to 3.0.0 and also in Gemfile
 
 # We also need
-sudo apt-get update
-sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+- sudo apt-get update
+- sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
 
 
 # We need elastic search
 https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-20-04
 
 # if we don't have java (I didn't) java -version tells you
-sudo apt install default-jre
-
-sudo apt install default-jdk
+- sudo apt install default-jre
+- sudo apt install default-jdk
 
 
 # check with javac -version
 # javac 11.0.9.1
 
-curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-sudo apt update
-sudo apt install elasticsearch
+- curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+- echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+- sudo apt update
+- sudo apt install elasticsearch
 
-# change networkhost in /etc/elasticsearch/elasticsearch.yml
+# *change networkhost in /etc/elasticsearch/elasticsearch.yml*
 
-sudo systemctl start elasticsearch
-sudo systemctl enable elasticsearch
+- sudo systemctl start elasticsearch
+- sudo systemctl enable elasticsearch
 
 
 # Also I had to change the arxiv_feed_import.rake file (in lib/tasks) to read URI.open rather than just open on line 23
@@ -105,22 +105,22 @@ sudo systemctl enable elasticsearch
 # Had to add -- gem 'rexml'  -- to the Gemfile (remember to bundle install again)
 
 
-bundle install
+- bundle install
 
 
 
-rake db:setup
-rake es:migrate
-rake arxiv:feed_import
-rails server
+- rake db:setup
+- rake es:migrate
+- rake arxiv:feed_import
+- rails server
 
 (kill server - CTRL-C)
 
 ## Populating the database
 
-rake arxiv:oai_update
+- rake arxiv:oai_update
 
-rails s 
+- rails s 
 
 # And it seems to work!
 
