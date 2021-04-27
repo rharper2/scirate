@@ -1,0 +1,20 @@
+- title= "Group home page"
+
+- provide :title, "Group home page"
+ 
+.container
+    .row
+    .col-md-1.feedbar
+    .col-md-10
+		<h1>Sydney Quantum Group, Message Board</h1>
+	    a class="btn btn-primary" style="color: white; margin: 10px 10px 30px 30px;" title="Go to group meeting page" href="/group" 
+ 		  		| GOTO Group meeting page
+ 		a class="btn btn-primary" style="color: white; margin: 10px 10px 30px 30px;" title="Browse papers" href="/papers"
+ 		  		| Browse Papers
+		-if @gmessages
+		   = render :partial => "group/mymessage", :collection => @gmessages, as: :message
+		<iframe src="https://calendar.google.com/calendar/embed?src=bsbggcinmj8hn6390btmjanr34%40group.calendar.google.com&ctz=Australia%2FSydney" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe> 
+   		- if current_user.can_moderate?
+        
+			.comment-form
+     			= render 'mow_message'

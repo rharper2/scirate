@@ -52,6 +52,50 @@ class FeedsController < ApplicationController
 
     render 'feeds/show'
   end
+  # Aggregated group feed
+  # We need to include all streams, but we only want "scited" papers.
+  def group
+     logger.info("**** range is #{@range} ****")
+     if @date.nil?
+        logger.info("date is null, so assume todays date.")
+        # @date = Feed.order("last_paper_date DESC").limit(1).pluck(:last_paper_date).first
+        @date=Time.now
+        logger.info("The wday is #{@date.wday} and the hour is #{@date.hour}")
+  logger.info("At the beginning range is #{@range} and since last is #{:since_last}")
+        logger.info("Range parse gives us #{_parse_range(params)}")
+  if  _parse_range(params).nil?
+
+        #if @range == :since_last 
+     if (@date.wday > 4) 
+    @range = @date.wday-4
+           else 
+    @range = @date.wday+3
+     end
+        end
+        logger.info("Date has become #{@date.inspect} and range is #{@range}")
+    end
+    logger.info("Date has become #{@date.inspect} and range is #{@range}")
+    #@range = 14
+    @backdate = _backdate(@date, @range)
+    logger.info("==================================================")
+    logger.info("Backdate is #{@backdate.inspect} which has wday #{@backdate.wday}")
+    # here we select an arbitrary number of comments (I think its 150)
+    # and throw away any that are too old.
+    #@recent_comments = _recent_comments(feed_uids)
+    #@recent_comments = _time_comments.select{ |c| c.updated_at > @backdate+1.day}
+    # so this loads the papers assuming all feeds.
+    # temp test Grange_query -> range_query
+    @papers, @pagination = _Grange_query(nil, @backdate, @date, @page)
+    @scited_by_uid = current_user.scited_by_uid(@papers)
+    #logger.info("The papers are #{@papers.inspect}")
+    #logger.info("The comments are #{@recent_comments.inspect}")
+    logger.info("ABOUT TO RENDER <<<< ")
+    # A lot of the heavy lifting is pushed on to the render.
+    render 'feeds/meeting'
+    
+    return
+    
+  end
 
   # Showing a feed while we aren't signed in
   def show_nouser
@@ -242,4 +286,63 @@ class FeedsController < ApplicationController
 
     return [papers, pagination]
   end
+
+
+  def _Grange_query(feed_uids, backdate, date, page)
+     page = (page.nil? ? 1 : page.to_i)
+    per_page = 50
+
+    filter = [
+      {
+        range: {
+          pubdate: {
+           gte: backdate.beginning_of_day,
+           lte: date.end_of_day
+          }
+        }
+      },
+      {
+        range: {
+          scites_count: {
+            gte: 1,
+          }
+        }
+      }
+    ]
+
+    filter << { terms: { feed_uids: feed_uids } } unless feed_uids.nil?
+
+    query = {
+      size: per_page,
+      from: (page-1)*per_page,
+      query: { bool: { filter: filter } },
+      sort: [
+        { scites_count: 'desc' },
+        { comments_count: 'desc' },
+        { pubdate: 'desc' },
+        { submit_date: 'desc' },
+        { uid: 'asc' }
+      ]
+    }
+
+    res = Search::Paper.es_find(query)
+
+    papers_by_uid = map_models :uid, Paper.where(uid: res["hits"]["hits"].map { |p| p["_source"]["uid"] })
+
+    papers = res["hits"]["hits"].map do |p|
+      doc = p["_source"]
+
+      paper                    = papers_by_uid[doc["uid"]]
+      paper.authors_fullname   = doc["authors_fullname"]
+      paper.authors_searchterm = doc["authors_searchterm"]
+      paper.feed_uids          = doc["feed_uids"]
+
+      paper
+    end
+
+    pagination = WillPaginate::Collection.new(page, per_page, res["hits"]["total"]["value"])
+
+    return [papers, pagination]
+  end
+
 end

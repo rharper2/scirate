@@ -54,9 +54,13 @@ class CommentsController < ApplicationController
         @comment.save!
         @comment.submit_trackback
         flash[:comment] = { status: :success, content: "Comment posted." }
+        if @comment.paper.uid == "1"
+        redirect_to("/group")
+        else
+          redirect_to @comment.paper
+        end
     end
 
-    redirect_to @comment.paper
   end
 
   def edit

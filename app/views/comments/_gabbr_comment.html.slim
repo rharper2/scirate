@@ -1,0 +1,22 @@
+
+-if uid==comment.paper_uid
+ .abbr-comment data-comment-id=(uid)
+  
+  span.username
+    a href="/user/#{comment.user_username}"
+      = comment.user_fullname
+  =< timeago(comment.created_at)
+  div.comment data-id=(comment.id) data-markup=(comment.content)
+   .body.tex2jax
+        = simple_format(strip_tags(comment.content))
+     
+   - if   current_user
+        .actions
+          - if current_user.id == comment.user_id
+            a.edit edit
+            a.reply reply
+            = link_to 'Delete post', delete_comment_path(comment), method: :post
+          - if current_user.is_moderator?
+            .div 
+             span style="color:red" Moderate:
+             =< link_to 'delete', delete_comment_path(comment), method: :post

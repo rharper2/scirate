@@ -1,0 +1,22 @@
+
+.row
+  .col-md-12
+   .well
+    span.username
+     .col-md-offset-1
+    h3 
+      =< message.meeting.to_date.strftime("Date: %d/%m/%Y")
+    div.comment data-id=(message.id) data-markup=(message.content)
+     .body.tex2jax
+         = simple_format(strip_tags(message.content))
+     -if !message.image.url.include? "missing"
+       = image_tag message.image.url(:original)
+     - if   current_user
+       .actions
+          - if current_user.is_moderator?
+            a.edit Edit
+            / a.reply reply
+            a href="/group/#{message.id}/delete" data-method="post" 
+              | Delete Post
+hr
+ 

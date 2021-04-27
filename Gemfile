@@ -1,4 +1,4 @@
-ruby '3.0.0'
+ruby '3.0.1'
 source 'http://rubygems.org'
 
 # Rails
@@ -47,7 +47,7 @@ gem 'coffee-rails'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'slim'
-
+gem 'paperclip'
 # Memcached gem
 gem 'dalli'
 

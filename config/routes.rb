@@ -1,7 +1,16 @@
 require 'sessions_helper'
 
 SciRate::Application.routes.draw do
-  root 'feeds#index'
+  get '/signup',   to: 'users#new', as: 'signup'
+  post '/signup',  to: 'users#create'
+  
+  get 'group/mow', as: 'root'
+  post 'group/create'
+  get '/', to: 'group#mow'
+  #root 'feeds#index'
+  get '/papers', to: 'feeds#index'
+
+  get '/group', to: 'feeds#group', as: 'group'
 
   get '/search', to: 'papers#search', as: 'papers_search'
 
@@ -40,8 +49,6 @@ SciRate::Application.routes.draw do
   get '/auth/failure', to: 'sessions#omniauth_failure', as: 'omniauth_failure'
   post '/auth/create', to: 'sessions#omniauth_create', as: 'omniauth_create'
 
-  get '/signup',   to: 'users#new', as: 'signup'
-  post '/signup',  to: 'users#create'
   get '/login',    to: 'sessions#new'
   post '/login',   to: 'sessions#create'
   get '/logout',   to: 'sessions#destroy'

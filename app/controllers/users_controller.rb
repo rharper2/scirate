@@ -2,8 +2,9 @@ require 'open-uri'
 require 'data_helpers'
 
 class UsersController < ApplicationController
-  before_action :signed_in_user,
-           only: [:feeds, :edit, :update, :destroy, :settings, :settings_password]
+  before_action :signed_in_user, except: [:new, :create, :activate]
+  #,
+  #         only: [:feeds, :edit, :update, :destroy, :settings, :settings_password]
 
   before_action :correct_user, only: [:edit, :update, :destroy]
 
@@ -75,10 +76,10 @@ class UsersController < ApplicationController
       default_username = User.default_username(params[:user][:fullname])
       @user = User.new(params.required(:user).permit(:fullname, :email, :password).merge(username: default_username, password_confirmation: params[:user][:password]))
 
-      unless verify_recaptcha?(params["g-recaptcha-response"], 'submit')
-        flash[:error] = "reCaptcha verification failed!"
-        render 'new' and return
-      end
+      #unless verify_recaptcha?(params["g-recaptcha-response"], 'submit')
+      #  flash[:error] = "reCaptcha verification failed!"
+      #  render 'new' and return
+      #send
 
       if @user.save
         @user.send_signup_confirmation

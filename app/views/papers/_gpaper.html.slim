@@ -1,0 +1,103 @@
+- cool_paper = paper.scites_count > 0 || @search
+
+- unless defined?(showabs)
+  - showabs = cool_paper || (!current_user || current_user.expand_abstracts)
+
+li.paper.tex2jax
+  / Lazy programming just easy to see if its the first paper or a later, one, we need double select (between this and the previous one)
+  / to select the relevant messages to display.
+  / - if paper_counter == 0
+  /     = render :partial => "comments/mymessage", :collection => @recent_comments.select { |comment| comment.updated_at > pCol[paper_counter].latest_comment}, as: :comment
+  - if paper_counter > 0
+  /    = render :partial => "comments/mymessage", :collection => @recent_comments.select { |comment| comment.updated_at > pCol[paper_counter].latest_comment}.select { |comment| comment.updated_at <= pCol[paper_counter-1].latest_comment}, as: :comment
+  .row
+    .col-md-8
+      .title
+        a href="/arxiv/#{paper.uid}" = paper.title
+        
+      .authors
+        - paper.authors_searchterm[0..19].each_with_index do |searchterm, i|
+          -if !paper.feed_uids[0].nil?
+            a> href="/search?q=au:#{searchterm}+in:#{paper.feed_uids[0].split('.')[0]}"
+             = paper.authors_fullname[i] + (i == paper.authors_searchterm.length - 1 ? ' ' : ',')
+        - if paper.authors_searchterm.length > 20
+          = link_to "et al (#{paper.authors_searchterm.length - 20})", paper
+      .uid
+        => paper.pubdate.strftime("%b %d %Y")
+        - paper.feed_uids.each do |feed_uid|
+          a> href="/arxiv/#{feed_uid}" = feed_uid
+        => "arXiv:#{paper.uid}v#{paper.versions_count}"
+      .scites style="padding-bottom:10px"
+          strong
+            | Liked by:
+          - paper.sciters.select('fullname', 'username','id').each_with_index do |user, i|
+                    a< href="/user/#{user.username}" = user.fullname
+                    - if i != paper.scites_count-1
+                      | ,
+          .pull-right 
+             - paper.sciters.select('fullname','email','username','id').each_with_index do |user, i|
+               span
+                 =  gravatar_for(user, size: 70)
+                 - paper.scites.each do |scites|
+                    - if scites.user.id  == user.id 
+                              -if scites.like_type == 1
+                                  img src="/assets/giphy-5.gif" height="70"  
+                              -if scites.like_type == 2
+                                  img src="/assets/giphy-11.gif" height="70"  
+                              -if scites.like_type == 3
+                                  img src="/assets/giphy-2.gif" height="70"  
+                              -if scites.like_type == 4
+                                  img src="/assets/giphy-3.gif" height="70"  
+                              -if scites.like_type == 5
+                                  img src="/assets/giphy-4.gif" height="70" 
+                              -if scites.like_type == 6
+                                  img src="/assets/giphy-6.gif" height="70"
+    .col-md-4
+     .pull-right
+       table
+        tr
+         td
+           div.scite-toggle> data-paper-uid=(paper.uid)
+             button.btn.unscite.btn-success title="Unscite this paper"
+               | Liked
+
+             button.btn.btn-default.scite title="Scite this paper if you find it interesting"
+               | Like
+
+             .scites-count
+               a href="/arxiv/#{paper.uid}/scites" title="Number of Scites"
+                 button.btn.btn-default.count= paper.scites_count
+
+           div.bibtex>
+             a.btn.btn-default title="Get BibTeX citation"
+               i.fa.fa-bookmark-o
+             .card.hidden
+               textarea.bibtex= paper.to_bibtex
+               button#copyButton.btn.btn-default Copy Citation
+         td
+           a.paper-download.btn.btn-success style="margin-left:4px;margin-bottom:4px" title="Download PDF" href=(paper.pdf_url)
+             | PDF
+           - if paper.comments_count > 0
+             div
+               a href="/arxiv/#{paper.uid}" = pluralize(paper.comments_count, 'comment')
+        tr
+         td
+            .h5 Scirate Cites
+         td    
+            .scites-count
+                a href="https://scirate.com/arxiv/#{paper.uid}/scites" target="_bank" title="Number of Scirate Scites"
+                 button.btn.btn-default.count = paper.scirate_rates      
+  
+  .abstract id="accordian#{paper.uid}" class="panel-group"
+    .panel class="panel-default"
+      .panel-heading
+         h4 class="panel-title"
+           a data-toggle="collapse" data-parent="#accordian#{paper.uid.sub('.','D')}" href="#collapse#{paper.uid.sub('.','D')}"
+              ="Abstract"
+      .collapse class="panel-collapse collapse in"  id="collapse#{paper.uid.sub('.','D')}"
+          .panel-body
+              = paper.abstract
+  .col-md9 
+    .comments class="col-md-offset-1"
+      = render :partial => "comments/gabbr_comment", :collection => @recent_comments, as: :comment, locals: { uid: paper.uid}
+          
