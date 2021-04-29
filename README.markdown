@@ -1,13 +1,27 @@
-# SciRate
+# SciRate - Usydrate version.
 
-[![Build Status](https://travis-ci.org/scirate/scirate.svg?branch=master)](https://travis-ci.org/scirate/scirate)
-[![Coverage Status](https://coveralls.io/repos/scirate/scirate/badge.svg?branch=master)](https://coveralls.io/r/scirate/scirate?branch=master)
+This is a modified version of scirate, which I *know* I will struggle to keep up to date with the current scirate master.
+
+The idea is that it introduces a new group page tab. Members can 'usydite' err scite, papers and they will be up for discussion at our group meetings.
+Limited ability to add comments to be discussed at the meeting. Also a group page, with a timed message for the week etc.
+
+Very basic functionality. Papers are sorted based on group scites and also Scirate scites (the scirate site is scaped periodically). There is no click through just now i.e. we don't try and update scites on scirate, but if you click the cirate count it will open scirate ready for you to scite the paper there.
+
+Currently broken - the ability to attach images to comments.
+
+
+### From the main Scirate README
+----
 
 [SciRate](https://scirate.com/) is an open source rating and commenting system for [arXiv](http://arxiv.org/) preprints. Papers are upvoted and discussed by the community, and we sometimes play host to more [in depth peer review](https://scirate.com/tqc-2014-program-committee).
 
 Bug reports and feature requests should be submitted as [GitHub issues](https://github.com/scirate/scirate/issues).
 
+----
+
 # Instructions to set up on a clean version of UBUNTO 20.04
+
+(Most of these instructions will work with a clean scirate install - I'll try and note when these files differ from the standard scirate one).
 
 ## The first thing is to get ruby and rails sorted. For this I used the following:
 
@@ -84,29 +98,29 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-el
 - sudo apt install default-jdk
 
 
-# check with javac -version
-# javac 11.0.9.1
+### check with javac -version
+
+```javac 11.0.9.1```
 
 - curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 - echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 - sudo apt update
 - sudo apt install elasticsearch
 
-# *change networkhost in /etc/elasticsearch/elasticsearch.yml*
+### You should check networkhost in /etc/elasticsearch/elasticsearch.yml*
 
 - sudo systemctl start elasticsearch
 - sudo systemctl enable elasticsearch
 
+### There were a few other changes I did, you won't need to redo them - they are in this repo:
 
-# Also I had to change the arxiv_feed_import.rake file (in lib/tasks) to read URI.open rather than just open on line 23
+- I had to change the arxiv_feed_import.rake file (in lib/tasks) to read URI.open rather than just open on line 23
+- Had to add -- gem 'rexml'  -- to the Gemfile (remember to bundle install again)
 
 
-
-# Had to add -- gem 'rexml'  -- to the Gemfile (remember to bundle install again)
-
+## Run the following
 
 - bundle install
-
 
 
 - rake db:setup
@@ -116,27 +130,28 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-el
 
 (kill server - CTRL-C)
 
-## Populating the database
+## How to get it up and running.
+
+### Populating the database
+
 
 - rake arxiv:oai_update
-
 - rails s 
+
+----
+Note: (aide memoire to me), if you want to bind rails so it can have external access -b 0.0.0.0. And port e.g. -p 3000
+Also nginx to proxypass from 80->3000
+
+----
 
 # And it seems to work!
 
-# Still to do -
---- recaptcha not working
---- check emails etc.
---- anything to do with a logged in user
---- anything to do with admin
+## Still to do -
 
+- recaptcha not working, so for this instance I have just removed references to it. I probably just needed to update keys.
+- you will need to set up email credentials in application.rb (or something do a grep on GMAIL)
 
-
-
-
-
-
-
+# Below is the readme taken from scirate (which is out of date)
 
 -----
 
