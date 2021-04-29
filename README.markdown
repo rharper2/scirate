@@ -21,7 +21,7 @@ Bug reports and feature requests should be submitted as [GitHub issues](https://
 
 ----
 
-# Instructions to set up on a clean version of UBUNTO 20.04
+# Instructions to set up on a clean version of UBUNTU 20.04
 
 (Most of these instructions will work with a clean scirate install - I'll try and note when these files differ from the standard scirate one).
 
