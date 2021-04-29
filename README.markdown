@@ -5,9 +5,11 @@ This is a modified version of scirate, which I *know* I will struggle to keep up
 The idea is that it introduces a new group page tab. Members can 'usydite' err scite, papers and they will be up for discussion at our group meetings.
 Limited ability to add comments to be discussed at the meeting. Also a group page, with a timed message for the week etc.
 
-Very basic functionality. Papers are sorted based on group scites and also Scirate scites (the scirate site is scaped periodically). There is no click through just now i.e. we don't try and update scites on scirate, but if you click the cirate count it will open scirate ready for you to scite the paper there.
+Very basic functionality. Papers are sorted based on group scites and also Scirate scites (the scirate site is scaped periodically). There is no click through just now i.e. we don't try and update scites on scirate, but if you click the scirate count it will open scirate ready for you to scite the paper there.
 
-Currently broken - the ability to attach images to comments.
+## Things that I know are currently broken 
+
+- the ability to attach images to comments.
 
 
 ### From the main Scirate README
