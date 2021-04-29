@@ -56,12 +56,16 @@ class Paper < ActiveRecord::Base
 
   validate :update_date_is_after_submit_date
 
+
   # Re-index after a scite or comment
   after_save do
-    if scites_count_changed? || comments_count_changed?
+    logger.info("Paper after save")
+    if scites_count_changed? || comments_count_changed? || scirate_rates_changed?
+      logger.info("Scite or comment count changed")
       ::Search::Paper.index(self)
     end
   end
+
 
   # Given when a paper was submitted, estimate the
   # time at which the arXiv was likely to have published it

@@ -17,8 +17,8 @@
           h3 
              | Papers liked: 
              => (@papers.count) 
-             / | Messages left: 
-             / => (@recent_comments.select { |c| c.paper_uid == "1"}.count)
+             | Messages left: 
+             => (@recent_comments.select { |c| c.paper_uid == "1"}.count)
              - if @papers.count < 1
                 .row
                  .col-md-5
@@ -59,7 +59,7 @@
                     = render partial: "papers/gpaper", collection: @papers,  as: :paper, locals: { comments: @recent_comments, pCol: @papers}
                 = will_paginate @pagination
                 / last we want any messages that are "older" than the last scited paper.
-                / = render :partial => "comments/mymessage", :collection => @recent_comments.select { |comment| comment.updated_at <= @papers[-1].latest_comment}, as: :comment
+                = render :partial => "comments/mymessage", :collection => @recent_comments.select { |comment| comment.paper_uid == "1"}, as: :comment
  
           .comment-form
                = render 'papers/gcomment_form'

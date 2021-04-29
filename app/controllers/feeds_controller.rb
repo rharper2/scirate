@@ -79,7 +79,7 @@ class FeedsController < ApplicationController
     #@range = 14
     @backdate = _backdate(@date, @range)
     logger.info("==================================================")
-    logger.info("Backdate is #{@backdate.inspect} which has wday #{@backdate.wday}")
+    logger.info("==4== Backdate is #{@backdate.inspect} which has wday #{@backdate.wday}")
     # here we select an arbitrary number of comments (I think its 150)
     # and throw away any that are too old.
     #@recent_comments = _recent_comments(feed_uids)

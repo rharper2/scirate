@@ -38,20 +38,20 @@ li.paper.tex2jax
              - paper.sciters.select('fullname','email','username','id').each_with_index do |user, i|
                span
                  =  gravatar_for(user, size: 70)
-                 - paper.scites.each do |scites|
-                    - if scites.user.id  == user.id 
-                              -if scites.like_type == 1
-                                  img src="/assets/giphy-5.gif" height="70"  
-                              -if scites.like_type == 2
-                                  img src="/assets/giphy-11.gif" height="70"  
-                              -if scites.like_type == 3
-                                  img src="/assets/giphy-2.gif" height="70"  
-                              -if scites.like_type == 4
-                                  img src="/assets/giphy-3.gif" height="70"  
-                              -if scites.like_type == 5
-                                  img src="/assets/giphy-4.gif" height="70" 
-                              -if scites.like_type == 6
-                                  img src="/assets/giphy-6.gif" height="70"
+                 /- paper.scites.each do |scites|
+                 /   - if scites.user.id  == user.id 
+                 /             -if scites.like_type == 1
+                 /                 img src="/assets/giphy-5.gif" height="70"  
+                 /             -if scites.like_type == 2
+                 /                 img src="/assets/giphy-11.gif" height="70"  
+                 /             -if scites.like_type == 3
+                 /                 img src="/assets/giphy-2.gif" height="70"  
+                 /             -if scites.like_type == 4
+                 /                 img src="/assets/giphy-3.gif" height="70"  
+                 /             -if scites.like_type == 5
+                 /                 img src="/assets/giphy-4.gif" height="70" 
+                 /             -if scites.like_type == 6
+                 /                 img src="/assets/giphy-6.gif" height="70"
     .col-md-4
      .pull-right
        table
