@@ -88,9 +88,9 @@ class FeedsController < ApplicationController
     # temp test Grange_query -> range_query
     @papers, @pagination = _Grange_query(nil, @backdate, @date, @page)
     @scited_by_uid = current_user.scited_by_uid(@papers)
-    #logger.info("The papers are #{@papers.inspect}")
-    #logger.info("The comments are #{@recent_comments.inspect}")
-    logger.info("ABOUT TO RENDER <<<< ")
+    # logger.debug("The papers are #{@papers.inspect}")
+    # logger.debug("The comments are #{@recent_comments.inspect}")
+    logger.debug("ABOUT TO RENDER <<<< ")
     # A lot of the heavy lifting is pushed on to the render.
     render 'feeds/meeting'
     
@@ -278,7 +278,7 @@ class FeedsController < ApplicationController
         }
       }
     ]
-    logger.info("Filter ==22== #{filter}")
+    logger.debug("Filter ==22== #{filter}")
 
     filter << { terms: { feed_uids: feed_uids } } unless feed_uids.nil?
 
@@ -295,10 +295,10 @@ class FeedsController < ApplicationController
         { uid: 'asc' }
       ]
     }
-    logger.info("==22== final query #{query}")
+    logger.debug("==22== final query #{query}")
 
     res = Search::Paper.es_find(query)
-    logger.info("==33== #{res}")
+    #logger.debug("==33== #{res}")
     papers_by_uid = map_models :uid, Paper.where(uid: res["hits"]["hits"].map { |p| p["_source"]["uid"] })
 
     papers = res["hits"]["hits"].map do |p|

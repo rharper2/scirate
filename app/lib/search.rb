@@ -7,7 +7,7 @@ module Search
   end
 
   def self.es
-    @es ||= Elasticsearch::Client.new url: 'http://localhost:9200', log: true
+    @es ||= Elasticsearch::Client.new url: 'http://localhost:9200'
   end
 
   # http://stackoverflow.com/questions/16205341/symbols-in-query-string-for-elasticsearch

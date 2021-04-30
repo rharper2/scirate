@@ -10,12 +10,12 @@ class GroupController < ApplicationController
   end
 
   def create
-  	logger.info("Params are #{params.inspect}")
-  	logger.info("Current user is #{current_user}")
+  	logger.debug("Params are #{params.inspect}")
+  	logger.debug("Current user is #{current_user}")
   	groupmessage_params =  params.require(:groupmessage).permit([:content,:image,:meeting]).merge(user_id: current_user.id)
   	logger.info("Group message is #{groupmessage_params.inspect}")
   	@groupmessage=Groupmessage.new(groupmessage_params)
-  	logger.info(@groupmessage.errors.inspect)
+  	logger.debug(@groupmessage.errors.inspect)
   	if (@groupmessage.content.nil? || @groupmessage.content.empty?) 
   		 flash[:groupmessage] = { status: :error, content: "You need to post something non nilhistic" }
    		 redirect_to request.referer
